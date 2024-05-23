@@ -31,6 +31,7 @@ import Chat from "./Pages/Chat";
 import Career from "./Pages/Career";
 import CareerApplication from "./Admin/CareerApplication/CareerApplication";
 import ManageInspector from "./Admin/ManageInspector/ManageInspector";
+import EmailVerification from "./Pages/EmailVerification";
 
 function App() {
   const userRole = localStorage.getItem("role");
@@ -49,6 +50,9 @@ function App() {
 
         <Routes>
           <Route path="/" element={<Shop />} />
+
+          <Route path="/verify/:uniqueString" element={<EmailVerification />} />
+
 
           <Route path="/user/login" element={<UserLoginSignup />} />
           <Route path="/user/signup" element={<UserLoginSignup />} />
@@ -95,6 +99,8 @@ function App() {
               path="/chat/:recipientId/:senderId/:recipientName"
               element={<Chat />}
             />
+
+
 
             <Route path="/shop" element={<ShopCategory />} />
 

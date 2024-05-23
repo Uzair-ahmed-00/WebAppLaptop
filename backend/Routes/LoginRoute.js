@@ -39,6 +39,13 @@ router.post("/:userRole/login", async (req, res) => {
         .json({ success: false, message: "User does not exist" });
     }
 
+    if (userData.isValid === false) {
+      return res
+        .status(401)
+        .json({ success: false, message: "User does not exist" });
+
+    }
+
     // Comparing the encrypted password and user password
     const comparedPassword = await bcrypt.compare(
       userPassword,

@@ -139,7 +139,7 @@ function LoginSignup({ loginRole = "" }) {
         setState("Login");
         navigate("/user/login");
 
-        toast.success("Signup successful. Please Login", {
+        toast.success("Verification email sent", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: false,

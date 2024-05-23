@@ -24,12 +24,12 @@ const userSchema = new mongoose.Schema({
   },
   isValid: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   //   This will be used for email verification
   uniqueString: {
     type: String,
-    required: true,
+    // required: true,
   },
   date: {
     type: Date,
