@@ -2,42 +2,40 @@ const express = require("express");
 const User = require("../Modals/User");
 const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
+require('dotenv').config();
 
 const router = express.Router();
 
-// function to generate random string
+// Function to generate random string
 const randString = () => {
-  const len = 8; //considering a 8 length string
+  const len = 8; 
   let randStr = "";
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
   for (let i = 0; i < len; i++) {
-    //ch = a number between 1 tp 10
-    const ch = Math.floor(Math.random() * 10 + 1);
-    randStr += ch;
+    const ch = Math.floor(Math.random() * characters.length);
+    randStr += characters[ch];
   }
   return randStr;
 };
 
-// function to send email
+// Function to send email
 const sendEmail = async (email, uniqueString) => {
-  var Transport = nodemailer.createTransport({
+
+  const Transport = nodemailer.createTransport({
     service: "Gmail",
+    host: "smtp.gmail.com",
     auth: {
-      user: "",
+      user: process.env.NODEMAILER_EMAIL,
       pass: process.env.NODEMAILER_PASSWORD,
     },
   });
 
-  var mailOptions;
-  let sender = process.env.NODEMAILER_EMAIL;
-  console.log(email, uniqueString);
-
-  mailOptions = {
-    from: sender,
+  const mailOptions = {
+    from: process.env.NODEMAILER_EMAIL,
     to: email,
     subject: "Email confirmation",
-    //html: "<b>Hello world ✔</b>"
-    html: `Press <a href=http://localhost:5173/verify/${uniqueString}> Here </a> to verify your email. Thanks`,
+    html: `Press <a href=http://localhost:3000/verify/${uniqueString}> Here </a> to verify your email. Thanks`,
   };
 
   try {
@@ -75,21 +73,16 @@ router.post("/signup", async (req, res) => {
     });
 
     // Save the user to the database
-    user
-      .save()
-      .then(() => {
-        console.log("User Added Successfully");
-        res.status(200).json({ sucess: true, message: "Signup successful" }); // Send a response with status code 200 and a message
-      })
-      .catch((error) => {
-        console.log("Failed to add user:::::", error);
-      });
+    await user.save();
+    console.log("User Added Successfully");
 
-    //function to send email to given user
-    //sendEmail(email, uniqueString);
+    // Send the email
+    await sendEmail(email, uniqueString);
+
+    res.status(200).json({ success: true, message: "Signup successful" }); // Send a response with status code 200 and a message
   } catch (error) {
     console.error(error);
-    res.status(500).json({ sucess: false, message: "Server Error" });
+    res.status(500).json({ success: false, message: "Server Error" });
   }
 });
 
